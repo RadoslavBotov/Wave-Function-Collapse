@@ -1,11 +1,12 @@
 # Wave Function Collapse
 
-![Icon](misc/icon.png)
+![Icon](misc/icon1.png)
+![Icon](misc/icon2.png)
 
 ## Introduction
 
 > Model synthesis a.k.a. wave function collapse or 'wfc' are names for a family of constraint-solving algorithms commonly used in procedural generation, especially in the video game industry.
-> -- [Wikipedia](#resources-and-inspirations)
+> -- Wikipedia
 
 This project is a Python implementation of the Wave Function Collapse algorithm for procedural image generation with a base tile image-set.
 
@@ -13,17 +14,21 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 
 ## Functionality
 
-+ Resizable grid to easily change generated image size
-+ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell)
-+ Manual mode where user can choose the tiles themselves
-+ Detection if grid is in a dead-end state (some cell has 0 possibilities left)
-+ Add new image-sets in resources easily by providing files(png) and describing their side permissions in a yaml file
++ Resizable grid to easily change generated image size ✅
++ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ❌
++ Manual mode where user can choose the tiles themselves ✅
++ Detection if grid is in a dead-end state (some cell has 0 possibilities left) ❌
++ Add new image-sets in resources easily by providing files(png) and describing their side permissions in a yaml file ✅
 
 ## Technologies
 
 + Python 3.12.7
 + Tkinter 8.6
 + PIL 10.4.0
+
+## Startup
+
+As they are, the paths for image resources are hardcoded with the parent directory being 'src'. As such the main.py has to be started from src as the working directory or 'no such file or directory found' errors will occur.
 
 ## Simple class structure
 
