@@ -5,8 +5,8 @@ from cells.CellManager import CellManager
 
 N = 8
 M = 40
-resource_path = 'resources/basic_tiles'
-tile_path = 'resources/basic_tiles_with_rotations'
+# resource_path = 'src/resources/basic_tiles'
+tile_path = 'src/resources/basic_tiles_with_rotations'
 tile_descriptions = 'tile_descriptions.yaml'
 
 def highlightCell(event, cell_manager):

@@ -19,9 +19,8 @@ class TileManager:
             valid_perms = self.__init_perms(permissions)
 
             for i in range(permissions.get('rotations')):
-                rotatedImage = images[name].rotate(90 * i)
-                tile = Tile(rotatedImage, valid_perms)
-                tile.rotate_permissions(i)
+                tile = Tile(images[name], valid_perms)
+                tile.rotate_tile(i)
                 self.tiles.append(tile)
 
     def __load_tile_configs(self):

@@ -1,22 +1,32 @@
-from PIL import Image
-
 from utils.Direction import convert_to_direction
 
 class Tile:
-    def __init__(self, image = Image.new('RGB', (40, 40)), side_permissions = [0, 0, 0, 0]):
+    def __init__(self, image = None, rules = [-1, -1, -1, -1]):
         self.image = image
-        self.side_permissions = side_permissions.copy()
+        self.rules = rules.copy()
     
-    def rotate_permissions(self, rotations = 1):
-        for r in range(rotations):
-            temp = self.side_permissions[0]
-            self.side_permissions[0] = self.side_permissions[1]
-            self.side_permissions[1] = self.side_permissions[2]
-            self.side_permissions[2] = self.side_permissions[3]
-            self.side_permissions[3] = temp
+    # rotates image counter-clockwise, and rules to the left
+    def rotate_tile(self, rotations = 1):
+        self.__rotate_image(rotations)
+        self.__rotate_permissions(rotations)
 
-    def match(self, other, direction):
+    def __rotate_image(self, rotations = 1):
+        if not self.image is None:
+            self.image = self.image.rotate(90 * (rotations % 4))
+
+    def __rotate_permissions(self, rotations = 1):
+        if not self.image is None:
+            self.rules = self.rules[rotations:] + self.rules[:rotations]
+
+    def resize_image(self, size):
+        self.image = self.image.resize((size, size))
+
+    def rules_match(self, other, direction):
         direction = convert_to_direction(direction)
         
         if direction.is_valid() == True:
-            return self.side_permissions[direction.inverse().value] == other.side_permissions[direction.value]
+            return self.rules[direction.inverse()] == other.rules[direction]
+        
+if __name__ == '__main__':
+    tile = Tile()
+    tile.rotate_tile()

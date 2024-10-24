@@ -27,7 +27,7 @@ class Cell:
 
    def reduce_possibilities(self, other, direction):
       if self._collapsed == False:
-         self.possibilities = [tile for tile in self.possibilities if tile.match(other.possibilities, direction=direction)]
+         self.possibilities = [tile for tile in self.possibilities if tile.rules_match(other.possibilities, direction=direction)]
          self.canvas.itemconfig(self.tagroid_text, text=str(len(self.possibilities)))
 
    def highlight(self, highligh_data):
