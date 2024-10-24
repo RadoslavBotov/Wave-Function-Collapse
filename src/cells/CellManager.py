@@ -19,7 +19,7 @@ class CellManager:
             self.cells.append(temp)
 
         self._highlight_data = HighlightData()
-        self._moves = [(-1, 0, Direction.NORTH), (0, 1, Direction.EAST), (1, 0, Direction.SOUTH), (0, -1, Direction.WEST)]
+        self._moves = [(-1, 0, Direction.north), (0, 1, Direction.east), (1, 0, Direction.south), (0, -1, Direction.west)]
 
     def highlight_cell(self, x, y):
         row, column = self.getCellIndex(x, y)

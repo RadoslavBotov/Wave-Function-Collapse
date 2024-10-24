@@ -1,4 +1,4 @@
-from utils.Direction import convert_to_direction
+from utils.Direction import Direction
 
 class Tile:
     def __init__(self, image = None, rules = [-1, -1, -1, -1]):
@@ -22,8 +22,9 @@ class Tile:
         self.image = self.image.resize((size, size))
 
     def rules_match(self, other, direction):
-        direction = convert_to_direction(direction)
-        
+        if not isinstance(direction, Direction):
+            direction = Direction[direction]
+            
         if direction.is_valid() == True:
             return self.rules[direction.inverse()] == other.rules[direction]
         
