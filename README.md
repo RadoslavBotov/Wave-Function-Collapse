@@ -23,12 +23,10 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 ## Technologies
 
 + Python 3.12.7
-+ Tkinter 8.6
-+ PIL 10.4.0
++ View requirements.txt for more details
 
 ## Startup
-
-As they are, the paths for image resources are hardcoded with the parent directory being 'src'. As such the main.py has to be started from src as the working directory or 'no such file or directory found' errors will occur.
+Should be started with 'Wave Function Collapse' as working directory (i.e. python src/main.py).
 
 ## Simple class structure
 
