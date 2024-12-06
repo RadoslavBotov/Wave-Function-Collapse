@@ -23,10 +23,12 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 ## Technologies
 
 + Python 3.12.7
-+ View requirements.txt for more details
++ tkinter 8.6 (built-in)
++ pathlib 1.0.1 (built-in)
++ View requirements.txt for other
 
 ## Startup
-Should be started with 'Wave Function Collapse' as working directory (i.e. python src/main.py).
+Can start program from its' containing directory(ex: ```python main.py``` when 'src' is cwd) or any parent directory(ex: ```python src/main.py``` when 'Wave Function Collapse' is cwd). # cwd - current working directory
 
 ## Simple class structure
 
