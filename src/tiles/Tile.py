@@ -1,4 +1,4 @@
-from utils.Direction import Direction
+from cells.Direction import Direction
 
 class Tile:
     def __init__(self, image = None, rules = [-1, -1, -1, -1]):

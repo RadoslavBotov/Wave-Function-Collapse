@@ -1,18 +1,19 @@
+import os
 from tiles.Tile import Tile
 
-from utils.ConfigParser import ConfigParser
-from utils.ImageLoader import ImageLoader
+from loaders.ConfigParser import ConfigParser
+from loaders.ImageLoader import ImageLoader
 
 class TileManager:
-    def __init__(self, image_size = 40, tile_path = 'src/resources/basic_tiles', tile_descriptions = 'tile_descriptions.yaml'):
+    def __init__(self, image_size, tile_path, tile_descriptor):
         self.image_size = image_size
         self.tile_path = tile_path
-        self.tile_descriptions = tile_descriptions
+        self.tile_descriptor = tile_descriptor
         self.tiles = []
 
-    def create_tiles(self):
-        configs = self.__load_tile_configs()
-        images = self.__load_images()
+    def create_tiles(self, tile_set):
+        configs = self.__load_tile_configs(tile_set)
+        images = self.__load_images(tile_set)
         
         for name in configs:
             permissions = configs.get(name)
@@ -23,26 +24,15 @@ class TileManager:
                 tile.rotate_tile(i)
                 self.tiles.append(tile)
 
-    def __load_tile_configs(self):
-        parser = ConfigParser(f'{self.tile_path}/{self.tile_descriptions}')
+    def __load_tile_configs(self, tile_set):
+        parser = ConfigParser(os.path.join(self.tile_path, tile_set, self.tile_descriptor))
         parser.parse()
         return parser.config
 
-    def __load_images(self):
-        loader = ImageLoader(self.tile_path)
+    def __load_images(self, tile_set):
+        loader = ImageLoader(os.path.join(self.tile_path, tile_set))
         loader.load()
         return loader.images
 
     def __init_perms(self, perms):
         return [perms.get('north'), perms.get('east'), perms.get('south'), perms.get('west')]
-
-"""
-# Load tiles and rotations
-for f in os.listdir(tiles_path): 
-    if f.endswith('.png'):
-        image = Image.open(tiles_path + '/' + f).resize((M,M))
-        *permissions, rotations = loaded.get(f[:-4]).values()
-        for i in range(rotations):
-            rotatedImage = image.rotate(90 * i)
-            tiles.append(Tile(ImageTk.PhotoImage(rotatedImage), permissions, rotate=i))
-"""

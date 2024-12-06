@@ -1,6 +1,7 @@
 # custom
-tempCodeRunnerFile.py
+*temp*.py
 *test*.py
+configs.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
