@@ -1,26 +1,24 @@
 from enum import IntEnum
 
+
 class Direction(IntEnum):
-    invalid = -1
+    INVALID = -1
     
-    north = 0
-    n = 0
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
 
-    east = 1
-    e = 1
 
-    south = 2
-    s = 2
-
-    west = 3
-    w = 3
-
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return self.value != -1
 
-    def inverse(self):
-       match self.name:
-           case 'north': return Direction.south
-           case 'east' : return Direction.west
-           case 'south': return Direction.north
-           case 'west' : return Direction.east
+
+    def inverse(self) -> 'Direction':
+        match self:
+           case Direction.NORTH: return Direction(2)
+           case Direction.EAST : return Direction(3)
+           case Direction.SOUTH: return Direction(0)
+           case Direction.WEST : return Direction(1)
+        
+        return Direction.INVALID

@@ -1,6 +1,7 @@
-from cells.Cell import Cell
-from cells.HighlightData import HighlightData
-from cells.Direction import Direction
+from src.cells.cell import Cell
+from src.cells.highlight_data import HighlightData
+from src.cells.direction import Direction
+
 
 class CellManager:
     def __init__(self, dim, size, canvas, possibilities = []):
@@ -14,12 +15,14 @@ class CellManager:
             self.cells.append(temp)
 
         self._highlight_data = HighlightData()
-        self._moves = [(-1, 0, Direction.north), (0, 1, Direction.east), (1, 0, Direction.south), (0, -1, Direction.west)]
+        self._moves = [(-1, 0, Direction.NORTH), (0, 1, Direction.EAST), (1, 0, Direction.SOUTH), (0, -1, Direction.WEST)]
+
 
     def highlight_cell(self, x, y):
         row, column = self.getCellIndex(x, y)
         if 0 <= row < self.dim and 0 <= column < self.dim:
             self.cells[row][column].highlight(self._highlight_data)
+
 
     def collapse(self, x, y):
         row, column = self.getCellIndex(x, y)
@@ -30,7 +33,9 @@ class CellManager:
             if 0 <= row + i < self.dim and 0 <= column + j < self.dim:
                 self.cells[row + i][column + j].reduce_possibilities(cell, dir)
     
+
     def getCellIndex(self, x, y):
         column = x // self.size
         row = y // self.size
+
         return row, column

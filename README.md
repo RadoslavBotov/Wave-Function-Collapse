@@ -15,10 +15,11 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 ## Functionality
 
 + Resizable grid to easily change generated image size ✅
-+ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ❌
 + Manual mode where user can choose the tiles themselves ✅
-+ Detection if grid is in a dead-end state (some cell has 0 possibilities left) ❌
 + Add new image-sets in resources easily by providing files(png) and describing their side permissions in a yaml file ✅
++ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ❌
++ Detection if grid is in a dead-end state (some cell has 0 possibilities left) ❌
++ Save current state of board as an image ❌
 
 ## Technologies
 
@@ -28,7 +29,7 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 + View requirements.txt for other
 
 ## Startup
-Can start program from its' containing directory(ex: ```python main.py``` when 'src' is cwd) or any parent directory(ex: ```python src/main.py``` when 'Wave Function Collapse' is cwd). # cwd - current working directory
+With Wave Function Collapse as working directory start with ```python main.py```.
 
 ## Simple class structure
 
