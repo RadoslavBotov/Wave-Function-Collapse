@@ -1,17 +1,20 @@
 from src.cells.cell import Cell
 from src.cells.highlight_data import HighlightData
 from src.cells.direction import Direction
+from src.tiles.tile_set_manager import TileSetManager
 
 
 class CellManager:
-    def __init__(self, dim, size, canvas, possibilities = []):
+    def __init__(self, dim, size, canvas, tile_set_manager: TileSetManager):
         self.cells = []
         self.dim = dim
         self.size = size
+        self.canvas = canvas
+        possibilities = tile_set_manager['default_tile_set']
         for row in range(dim):
             temp = []
             for column in range(dim):
-                temp.append(Cell(row, column, size, canvas, possibilities=possibilities))
+                temp.append(Cell(row, column, size, self.canvas, possibilities=possibilities))
             self.cells.append(temp)
 
         self._highlight_data = HighlightData()
@@ -39,3 +42,7 @@ class CellManager:
         row = y // self.size
 
         return row, column
+    
+    
+    def save_current_image(self):
+        pass

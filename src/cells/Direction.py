@@ -11,14 +11,14 @@ class Direction(IntEnum):
 
 
     def is_valid(self) -> bool:
-        return self.value != -1
+        return self is not Direction.INVALID
 
 
-    def inverse(self) -> 'Direction':
+    def get_opposite(self) -> 'Direction':
         match self:
-           case Direction.NORTH: return Direction(2)
-           case Direction.EAST : return Direction(3)
-           case Direction.SOUTH: return Direction(0)
-           case Direction.WEST : return Direction(1)
+           case Direction.NORTH: return Direction.SOUTH
+           case Direction.EAST : return Direction.WEST
+           case Direction.SOUTH: return Direction.NORTH
+           case Direction.WEST : return Direction.EAST
         
         return Direction.INVALID

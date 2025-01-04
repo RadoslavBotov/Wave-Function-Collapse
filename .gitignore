@@ -2,7 +2,6 @@
 *temp*.py
 *test*.py
 configs.yaml
-readers.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
