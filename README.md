@@ -2,6 +2,7 @@
 
 ![Icon](misc/icon1.png)
 ![Icon](misc/icon2.png)
+![Icon](misc/icon3.png)
 
 ## Introduction
 
@@ -30,6 +31,57 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 
 ## Startup
 With Wave Function Collapse as working directory start with ```python main.py```.
+
+## Tile format
+A Tile has an image and side_codes.
+
++ The image is what is show on the canvas upon collapsing the possibilities of a Cell.
++ Side codes describe which tile sides can touch other tiles sides. We represent this with a 12 character string '--- --- --- ---'. (4 substrings of 3 for each side). Each substring of three represents one of four sides: north, east, south, west.
+    + We can think of each character in a side, to be describing a pixel on that side of the image(left, middle, right), (top, center, bottom). In this way we can describe how different images are matched. Comparing the side code of one image to the reverse side code of another, tells us whether the sides can touch.
+    + In the figure bellow, the WEST side of symmetrical, matches the code of the NORTH side of asymmetrical_1, as such they can touch. 
+    + But the EAST side of asymmetrical_1, does not match the code of the WEST side of asymmetrical_2, so they cannot touch.
+    + Reading the code of asymmetrical_1 clockwise, starting from NORTH will give us: '010001111100'.
+
+![Icon](misc/side_code_example.png)
+
+This assignment of codes to a side allows us to support asymmetrical images. If the codes were simple integers, asymmetrical_1 and asymmetrical_2 would have matching side codes , event though visually, they cannot touch.
+
+## How to create a TileSet
+A TileSet is made up of two parts: a set of images(png or jpeg, but of same type within same tile set) and a yaml file that describes the tile set.
+
++ The images should generally be of the same size(the example tile sets use 40px by 40px images). Can be resized through config.file or the GUI.
++ The yaml file should be named either the same as the tile set folder or the default name given in configs file:
+    + folder name: if tile set folder is named default_tile_set, file can be named default_tile_set.yaml
+    + default name: tile_descriptions.yaml; can be changed in config.yaml. However, all such files will have to be renamed accordingly.
+
+Format of yaml file. For each image file in folder, there has to be a section describing it as such:
++ <image_file_name>: (without file extension)
+    + directions: side_codes of each image side (north, east, south, west)
+    + rotations: int | list[tuple[int, 'left/right']]; for each rotation, a copy of original will be added with that many rotations to tile set
+
+Directions can be written explicitly as a string of size 12(first 3 characters are NORTH, second set of 3 are EAST and so on) or with their cardinal directions as such (MUST be written as if reading the codes clockwise starting from NORTH.):
+
+Example for asymmetrical_1 from previous figure:
++ directions: '010001111100' or '010 001 111 100'
++ directions:
+    + north: '010'
+    + east: '001'
+    + south: 1 => equivalent to '111' (an integer is converted to a reputing string of itself 3 times)
+    + west: '100' # WEST was READ clockwise (bottom to top)
+
+Rotations can be written as an integer, or as a list of string with specific format 'int,int,..,int-left/right' (If rotations is missing, it will be treated as 'rotations: 0'):
++ rotations: 0 => only original image will be created for tile set
++ rotations: 1 => original image + original rotated once 90 degrees left will be created for tile set
++ rotations: 2 => original image + original rotated once 90 degrees left + original rotated twice 90 degrees left will be created for tile set
++ rotations: ['1-left', '1-right'] => original image + original rotated once 90 degrees left + original rotated once 90 degrees right will be created for tile set
++ rotations: ['1,2-left', '1-right'] => original image + original rotated once 90 degrees left + original rotated twice 90 degrees left + original rotated once 90 degrees right will be created for tile set
+
+Example for asymmetrical_1 from previous figure: 
++ rotations: 3 => In total 4 images will be added to tile set, each rotation of asymmetrical_1
++ rotations: ['1-left', '2-left', '3-left'] => equivalent to above example
++ rotations: ['1,2,3-left'] => equivalent to above example
+
+For practical examples, look at asymmetrical_tile_set(all formats are used there).
 
 ## Simple class structure
 

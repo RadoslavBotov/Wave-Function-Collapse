@@ -25,7 +25,11 @@ class TileSetManager(dict[str, TileSet]):
         tile_sets = TileSetManager()
 
         for tile_set_name in tile_set_dirs:
-            tile_set_configs = read_config_file(os.path.join(tile_set_directory_path, tile_set_name, 'tile_descriptions.yaml'))
+            try:
+                tile_set_configs = read_config_file(os.path.join(tile_set_directory_path, tile_set_name, 'tile_descriptions.yaml'))
+            except Exception:
+                tile_set_configs = read_config_file(os.path.join(tile_set_directory_path, tile_set_name, f'{tile_set_name}.yaml'))
+            
             tile_set_formatted_configs = ConfigFormatter.format_configs_for_images(tile_set_configs)
 
             tile_set_images = read_images(os.path.join(tile_set_directory_path, tile_set_name))

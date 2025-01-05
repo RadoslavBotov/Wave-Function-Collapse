@@ -1,7 +1,0 @@
-corner:
-  directions:
-    north:     '100'
-    east:      0
-    south:     0
-    west:      '001'
-  rotations: 3

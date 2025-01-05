@@ -58,7 +58,6 @@ if __name__ == '__main__':
     res = read_config_file('configs.yaml')
     print(res)
     
-    # """
     root = tk.Tk()
     root.geometry(f'{N*M}x{N*M}')
     root.resizable(False, False)
@@ -97,4 +96,3 @@ if __name__ == '__main__':
     
     # Start mainloop
     root.mainloop()
-    # """

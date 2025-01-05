@@ -12,7 +12,7 @@ from PIL import Image
 def read_config_file(file_path: str) -> dict[str, str|int]:
     '''
     Reads a *.yaml file and returns its dict representation.
-    - q
+    - file_path - qwe
     '''
     with open(file_path, "r") as f:
         loaded_configs = yaml.load(f, Loader=yaml.CLoader)
