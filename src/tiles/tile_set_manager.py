@@ -6,9 +6,16 @@ from src.readers.readers import read_config_file, read_images
 from src.readers.formatter import ConfigFormatter
 
 
-class TileSetManager(dict):
+class TileSetManager(dict[str, TileSet]):
     def __init__(self, *arg, **kw):
         super(TileSetManager, self).__init__(*arg, **kw)
+
+
+    def get_tile_image_size(self) -> None|tuple[int, int]:
+        if len(self) == 0:
+            return None
+
+        return list(self.values())[0].get_tile_image_size()
 
 
     @classmethod
@@ -28,7 +35,3 @@ class TileSetManager(dict):
             tile_sets[tile_set_name] = (tile_set)
 
         return tile_sets
-
-
-if __name__ == '__main__':
-    TileSetManager.create_tile_set_manager('tilesets')

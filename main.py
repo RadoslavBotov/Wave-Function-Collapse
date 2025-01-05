@@ -39,7 +39,8 @@ def save_image():
 
 
 def chose_tile_set(tile_set_name, cell_manager):
-    pass # cell_manager.switch_tile_sets_with(tile_set_name)
+    print(tile_set_name)
+    cell_manager.switch_tile_sets_with(tile_set_name)
 
 
 if __name__ == '__main__':
@@ -72,7 +73,8 @@ if __name__ == '__main__':
     tsm = TileSetManager.create_tile_set_manager(path_to_tiles)
 
     # Create cells
-    cm = CellManager(N, M, canvas, tsm)
+    cm = CellManager(N, N, M, canvas, tsm)
+    cm.switch_tile_sets_with()
     #cells = cm.cells
     
     # TODO: Create menus
@@ -84,7 +86,7 @@ if __name__ == '__main__':
 
     tile_set_menu = tk.Menu(menubar, tearoff=0)
     for tile_set_name in tsm:
-        tile_set_menu.add_command(label=tile_set_name, command=lambda: chose_tile_set(chose_tile_set, cm))
+        tile_set_menu.add_command(label=tile_set_name, command=lambda tsm=tile_set_name: chose_tile_set(tsm, cm))
     menubar.add_cascade(menu=tile_set_menu, label = "Tile Sets")
 
     root.config(menu=menubar)

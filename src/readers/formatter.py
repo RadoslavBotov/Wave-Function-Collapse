@@ -15,20 +15,46 @@ class ConfigFormatter:
         try:
             directions = formatted_configs[image_name]['directions']
         except KeyError:
-            formatted_configs[image_name]['directions'] = (-1, -1, -1, -1)
+            formatted_configs[image_name]['directions'] = ('---', '---', '---', '---')
             return
-
+        
+        if isinstance(directions, str):
+            if len(directions) != 12:
+                raise ValueError('Invalid direction string. Must be 12 characters long')
+            
+            return directions
+        
         if isinstance(directions, dict):
             directions_tuple = cls.__get_correct_direction_order(directions)
             formatted_configs[image_name]['directions'] = directions_tuple
 
 
     @classmethod
-    def __get_correct_direction_order(cls, directions: dict[str, int]) -> tuple[int, int, int, int]:
+    def __get_correct_direction_order(cls, directions: dict[str, int]) -> str:
         '''
         
         '''
-        return (directions['north'], directions['east'], directions['south'], directions['west'])
+        correct_order = [
+            cls.__get_correct_direction_format(directions['north']),
+            cls.__get_correct_direction_format(directions['east']),
+            cls.__get_correct_direction_format(directions['south']),
+            cls.__get_correct_direction_format( directions['west'])
+        ]
+        
+        return ''.join(correct_order)
+        
+
+
+    @classmethod
+    def __get_correct_direction_format(cls, direction: int|str) -> str:
+        if isinstance(direction, int):
+            return f'{direction}{direction}{direction}'
+        
+        if isinstance(direction, str):
+            if len(direction) != 3:
+                raise ValueError(f'Invalid direction: {direction}. Length must be 3, or an integer')
+            
+            return direction
 
 
     @classmethod

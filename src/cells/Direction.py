@@ -22,3 +22,8 @@ class Direction(IntEnum):
            case Direction.WEST : return Direction.EAST
         
         return Direction.INVALID
+    
+    def get_slice(self) -> slice:
+        start = 3 * self.value
+        end = 3 * self.value + 3
+        return slice(start, end)

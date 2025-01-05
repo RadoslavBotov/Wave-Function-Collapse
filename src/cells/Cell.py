@@ -1,22 +1,25 @@
 import random
+from tkinter import Canvas
 
 from PIL import Image, ImageTk
+
+from src.tiles.tile_set import TileSet
 
 
 class Cell:
     DEFAULT_BACKGROUND_COLOR = 'gray'
     
-    def __init__(self, x, y, size, canvas, possibilities = []):
-        self.x = y
-        self.y = x
-        self.size = size
+    def __init__(self, row, column, cell_size: int, canvas: Canvas, possibilities: TileSet):
+        self.row = column
+        self.column = row
+        self.cell_size = cell_size
         self.canvas = canvas
         self.possibilities = possibilities # TODO: should be of type Tile
-        self.image = ImageTk.PhotoImage(Image.new('RGB', (self.size, self.size), color=Cell.DEFAULT_BACKGROUND_COLOR))
-        self.image_id = canvas.create_image(self.x * self.size, self.y * self.size, image=self.image, anchor='nw')
-        self.text_id = canvas.create_text(self.x * self.size + self.size//2, self.y * self.size + self.size//2, text=str(len(self.possibilities)), anchor='center')
+        self.image = ImageTk.PhotoImage(Image.new('RGB', (self.cell_size, self.cell_size), color=Cell.DEFAULT_BACKGROUND_COLOR))
+        self.image_id = canvas.create_image(self.row * self.cell_size, self.column * self.cell_size, image=self.image, anchor='nw')
+        self.text_id = canvas.create_text(self.row * self.cell_size + self.cell_size//2, self.column * self.cell_size + self.cell_size//2, text=str(len(self.possibilities)), anchor='center')
         self._is_collapsed = False
-        
+
 
     def collapse(self):
         if self._is_collapsed is False:
@@ -38,11 +41,11 @@ class Cell:
 
 
     def highlight(self, highlight_data):
-        if self.x != highlight_data.last_row or self.y != highlight_data.last_column:
-            highlight_data.last_row = self.x
-            highlight_data.last_column = self.y
+        if self.row != highlight_data.last_row or self.column != highlight_data.last_column:
+            highlight_data.last_row = self.row
+            highlight_data.last_column = self.column
 
-            cur_rect = self.canvas.create_rectangle(self.x * self.size, self.y * self.size, self.x  * self.size + self.size, self.y  * self.size + self.size)
+            cur_rect = self.canvas.create_rectangle(self.row * self.cell_size, self.column * self.cell_size, self.row  * self.cell_size + self.cell_size, self.column  * self.cell_size + self.cell_size)
 
             if highlight_data.last_rect is not None:
                 self.canvas.delete(highlight_data.last_rect)

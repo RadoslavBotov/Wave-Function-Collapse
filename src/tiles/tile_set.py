@@ -10,6 +10,18 @@ class TileSet(list['Tile']):
         super(TileSet, self).__init__(*args, **kwargs)
 
 
+    def get_tile_image_size(self) -> None|int:
+        '''
+        As all images have same size, returns first tile image size.
+        If @tile.image is None, returns None.
+        Otherwise returns size of image.
+        '''
+        if len(self) == 0:
+            return None
+        
+        return self[0].get_image_size()
+
+
     def resize_tiles(self, new_size: int) -> None:
         for tile in self:
             tile.resize_image(new_size)
