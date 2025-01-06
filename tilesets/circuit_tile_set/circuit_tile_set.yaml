@@ -1,0 +1,112 @@
+# 0 - green
+# 1 - black
+# 2 - blue
+# 3 - grey
+
+chip:
+  directions: '111111111111'
+
+chip-one-corner:
+  directions: '100000000001'
+  rotations: 3
+
+chip-pcb:
+  directions: '100000001111'
+  rotations: 3
+
+chip-pin:
+  directions: '100020001111'
+  rotations: 3
+
+chip-pipe:
+  directions: '100030001111'
+  rotations: 3
+
+chip-three-corner:
+  directions: '101101100001'
+  rotations: 3
+
+chip-two-corner-cross:
+  directions: '100001100001'
+  rotations: 1
+
+chip-two-corner-side:
+  directions: '100000001101'
+  rotations: 3
+
+pcb:
+  directions: '000000000000'
+
+pcb-pipe:
+  directions: '000030000000'
+
+pcb-pipe-corner-1:
+  directions: '100030000001'
+  rotations: 3
+
+pcb-pipe-corner-2:
+  directions: '000030001100'
+  rotations: 3
+
+pcb-pipe-wire:
+  directions: '000020000000'
+
+pcb-pipe-wire-1:
+  directions: '020030000000'
+  rotations: 3
+
+pcb-pipe-wire-2:
+  directions: '000030020000'
+  rotations: 3
+
+pcb-pipe-wire-corner-1:
+  directions: '100020000001'
+  rotations: 3
+
+pcb-pipe-wire-corner-2:
+  directions: '000020001100'
+  rotations: 3
+
+pipe-corner:
+  directions: '030030000000'
+  rotations: 3
+
+pipe-end:
+  directions: '000030000000'
+  rotations: 3
+
+pipe-pipe-crossover:
+  directions: '030030030030'
+  rotations: 1
+
+pipe-straight:
+  directions: '000030000030'
+  rotations: 1
+
+wire-corner:
+  directions: '020020000000'
+  rotations: 3
+
+wire-corner-chip:
+  directions: '020020001100'
+  rotations: 3
+
+wire-corner-twin:
+  directions: '020020020020'
+  rotations: 1
+
+wire-end:
+  directions: '000020000000'
+  rotations: 3
+
+wire-pipe-crossover:
+  directions: '030020030020'
+  rotations: 1
+
+wire-straight:
+  directions: '000020000020'
+  rotations: 1
+
+wire-t-piece:
+  directions: '020020000020'
+  rotations: 3

@@ -8,7 +8,7 @@ import yaml
 
 from PIL import Image
 
-    
+
 def read_config_file(file_path: str) -> dict[str, str|int]:
     '''
     Reads a *.yaml file and returns its dict representation.

@@ -1,37 +1,25 @@
 corner:
-  directions:
-    north:     '100'
-    east:      0
-    south:     0
-    west:      '001'
+  directions: '100000000001'
   rotations: 3
 
 wall:
-  directions:
-    north:     '100'
-    east:      0
-    south:     '001'
-    west:      1
+  directions: '100 000 001 111'
   rotations: 3
 
 blank:
-  directions:
-    north:     0
-    east:      0
-    south:     0
-    west:      0
+  directions: 0
 
 fill:
-  directions:
-    north:     1
-    east:      1
-    south:     1
-    west:      1
+  directions: 1
 
 check:
   directions: '100001100001'
-  rotations: ['1,2,3-left']
+  rotations: 3
 
 three-parts:
-  directions: '111111100001'
+  directions:
+    north: 1
+    east: 1
+    south: '100'
+    west: '001'
   rotations: 3

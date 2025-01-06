@@ -5,19 +5,20 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
 
-from src.readers.readers import read_config_file
+from src.formatters.formatter import ConfigFormatter
+from src.readers.readers import read_config_file, read_images
 from src.cells.cell_manager import CellManager
 from src.tiles.tile_set_manager import TileSetManager
+from src.tiles.tile_set import TileSet
 
 
 # TODO: refactor to config file
 N = 8
+K = 8
 M = 40
 
 tile_path = Path('tilesets')
 tile_set = Path('default_tile_set')
-tile_descriptions = Path('tile_descriptions.yaml')
-
 
 def highlightCell(event, cell_manager):
     cell_manager.highlight_cell(event.x, event.y)
@@ -35,7 +36,8 @@ def save_image():
                                         initialdir=os.getcwd())
     
     if file != '':
-        print(file)
+        # print(file)
+        pass
 
 
 def chose_tile_set(tile_set_name, cell_manager):
@@ -59,7 +61,7 @@ if __name__ == '__main__':
     print(res)
     
     root = tk.Tk()
-    root.geometry(f'{N*M}x{N*M}')
+    root.geometry(f'{N*40}x{N*40}')
     root.resizable(False, False)
 
     # Create canvas
@@ -69,10 +71,24 @@ if __name__ == '__main__':
     # Load images and their configs
 
     # Create tile set manager
-    tsm = TileSetManager.create_tile_set_manager(path_to_tiles)
+    tile_set_dirs = [ts for ts in os.listdir(path_to_tiles) if ts.endswith('tile_set')]
+    tile_sets = dict()
+
+    for tile_set_name in tile_set_dirs:
+        tile_set_configs = read_config_file(os.path.join(tile_path, tile_set_name, f'{tile_set_name}.yaml'))
+        
+        tile_set_formatted_configs = ConfigFormatter.format_item(tile_set_configs)
+
+        tile_set_images = read_images(os.path.join(tile_path, tile_set_name))
+
+        tile_set = TileSet.create_tile_set(tile_set_formatted_configs, tile_set_images)
+
+        tile_sets[tile_set_name] = tile_set
+    
+    tsm = TileSetManager(tile_sets)
 
     # Create cells
-    cm = CellManager(N, N, M, canvas, tsm)
+    cm = CellManager(N, K, M, canvas, tsm)
     cm.switch_tile_sets_with()
     #cells = cm.cells
     
