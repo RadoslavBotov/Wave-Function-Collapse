@@ -1,3 +1,6 @@
+'''
+TileSet list implementation
+'''
 from PIL import Image
 from src.tiles.tile import Tile
 
@@ -10,23 +13,30 @@ class TileSet(list['Tile']):
         super(TileSet, self).__init__(*args, **kwargs)
 
 
-    def get_tile_image_size(self) -> None|int:
+    def get_tile_image_size(self) -> tuple[int, int]|None:
         '''
-        As all images have same size, returns first tile image size.
-        If @tile.image is None, returns None.
-        Otherwise returns size of image.
+        All images in TileSet should have the same size.
+        Returns the first tile's image size.
+        If TileSet is empty, returns None.
         '''
         if len(self) == 0:
             return None
-        
+
         return self[0].get_image_size()
 
 
-    def resize_tiles(self, new_size: int) -> None:
-        for tile in self:
-            tile.resize_image(new_size)
+    def resize_tiles(self, new_size: tuple[int, int]) -> bool:
+        '''
+        Resizes image of all tiles.
+        If all tiles have an image and resize succeeds, returns True.
+        Otherwise, returns False.
+
+        - new_size - new size of tiles' images
+        '''
+        return all(tile.resize_image(new_size) for tile in self)
 
 
+    # TODO: remove method to a main function
     @classmethod
     def create_tile_set(cls, configs: dict, images: dict[str, Image.Image]) -> 'TileSet':
         '''

@@ -13,19 +13,23 @@ from src.tiles.tile_set import TileSet
 
 
 # TODO: refactor to config file
-N = 8
-K = 8
+N = 10
+K = 10
 M = 40
 
 tile_path = Path('tilesets')
 tile_set = Path('default_tile_set')
 
-def highlightCell(event, cell_manager):
-    cell_manager.highlight_cell(event.x, event.y)
+def highlightCell(event, cell_manager: CellManager):
+    row, column = cell_manager.getCellIndices(event.x, event.y)
+    cell_manager.highlight_cell(row, column)
 
 
-def collapse(event, cell_manager):
-    cell_manager.collapse(event.x, event.y)
+def collapse(event, cell_manager: CellManager):
+    row, column = cell_manager.getCellIndices(event.x, event.y)
+    chosen_tile = cell_manager.collapse(row, column)
+    if chosen_tile is not None:
+        cell_manager.reduce_possibilities_for(row, column, chosen_tile)
 
 
 def save_image():
@@ -40,12 +44,19 @@ def save_image():
         pass
 
 
-def chose_tile_set(tile_set_name, cell_manager):
+def chose_tile_set(bool_variable, tile_set_name, cell_manager):
     print(tile_set_name)
-    cell_manager.switch_tile_sets_with(tile_set_name)
+    cell_manager.switch_tile_sets_with(bool_variable, tile_set_name)
 
 
-if __name__ == '__main__':
+def show_extra_cell_information(bool_variable, cell_manager):
+    if bool_variable.get() is True:
+        cell_manager.enable_cell_extra_information()
+    else:
+        cell_manager.disable_cell_extra_information()
+
+
+def main():
     # correct paths
     cwd = Path.cwd()                         # current working directory
     entry_point = Path(sys.argv[0])          # path to main when starting program
@@ -67,6 +78,7 @@ if __name__ == '__main__':
     # Create canvas
     canvas = tk.Canvas(root)
     canvas.pack(fill=tk.BOTH, expand=True)
+    canvas.configure(bg='grey')
 
     # Load images and their configs
 
@@ -83,13 +95,17 @@ if __name__ == '__main__':
 
         tile_set = TileSet.create_tile_set(tile_set_formatted_configs, tile_set_images)
 
-        tile_sets[tile_set_name] = tile_set
+        tile_sets[tile_set_name] = tile_set 
     
     tsm = TileSetManager(tile_sets)
 
+    # Create tkinter variables
+    show_extra_information = tk.BooleanVar()
+    show_extra_information.set(False)
+    
     # Create cells
     cm = CellManager(N, K, M, canvas, tsm)
-    cm.switch_tile_sets_with()
+    cm.switch_tile_sets_with(show_extra_information)
     #cells = cm.cells
     
     # TODO: Create menus
@@ -101,8 +117,13 @@ if __name__ == '__main__':
 
     tile_set_menu = tk.Menu(menubar, tearoff=0)
     for tile_set_name in tsm:
-        tile_set_menu.add_command(label=tile_set_name, command=lambda tsm=tile_set_name: chose_tile_set(tsm, cm))
+        tile_set_menu.add_command(label=tile_set_name, command=lambda sei=show_extra_information, tsm=tile_set_name: chose_tile_set(sei, tsm, cm))
     menubar.add_cascade(menu=tile_set_menu, label = "Tile Sets")
+    
+    cell_menu = tk.Menu(root, tearoff=0)
+    cell_menu.add_command(label='Show grid')
+    cell_menu.add_checkbutton(label='Show extra information', onvalue=1, offvalue=0, variable=show_extra_information, command=lambda: show_extra_cell_information(show_extra_information, cm))
+    menubar.add_cascade(menu=cell_menu, label = "Cells")
 
     root.config(menu=menubar)
 
@@ -112,3 +133,7 @@ if __name__ == '__main__':
     
     # Start mainloop
     root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
