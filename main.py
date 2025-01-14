@@ -5,8 +5,9 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
 
-from src.formatters.formatter import ConfigFormatter
-from src.readers.readers import read_config_file, read_images
+from src.formatters.image_config_formatter import ConfigFormatter
+from src.readers.yaml_reader import read_config_file
+from src.readers.image_reader import read_images
 from src.cells.cell_manager import CellManager
 from src.tiles.tile_set_manager import TileSetManager
 from src.tiles.tile_set import TileSet
@@ -15,7 +16,7 @@ from src.tiles.tile_set import TileSet
 # TODO: refactor to config file
 N = 10
 K = 10
-M = 40
+M = (40, 40)
 
 tile_path = Path('tilesets')
 tile_set = Path('default_tile_set')
@@ -68,7 +69,7 @@ def main():
     # wfc = WaveFunctionCollapse()
     # wfc.mainloop()
 
-    res = read_config_file('configs.yaml')
+    res = read_config_file(Path('configs.yaml'))
     print(res)
     
     root = tk.Tk()
@@ -87,11 +88,11 @@ def main():
     tile_sets = dict()
 
     for tile_set_name in tile_set_dirs:
-        tile_set_configs = read_config_file(os.path.join(tile_path, tile_set_name, f'{tile_set_name}.yaml'))
+        tile_set_configs = read_config_file(Path(tile_path, tile_set_name, f'{tile_set_name}.yaml'))
         
         tile_set_formatted_configs = ConfigFormatter.format_item(tile_set_configs)
 
-        tile_set_images = read_images(os.path.join(tile_path, tile_set_name))
+        tile_set_images = read_images(Path(tile_path, tile_set_name))
 
         tile_set = TileSet.create_tile_set(tile_set_formatted_configs, tile_set_images)
 

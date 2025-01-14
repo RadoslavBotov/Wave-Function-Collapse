@@ -5,17 +5,21 @@ from src.tiles.tile_set import TileSet
 
 
 class TileSetManager(dict[str, TileSet]):
-    def __init__(self, *arg, **kw):
+    '''
+    qwe
+    '''
+    def __init__(self, *args, **kwargs):
         '''
         A dict of TileSets.
-        Format should be 'tile_set_name' => TileSet.
+        Format should be {'tile_set_name': TileSet}.
         '''
-        super(TileSetManager, self).__init__(*arg, **kw)
+        super(TileSetManager, self).__init__(*args, **kwargs)
 
 
     def get_tile_set_image_size(self, tile_set_name: str) -> tuple[int, int]|None:
         '''
         Returns the size of a Tile in a TileSet.
+        
         If TileSetManager is empty, returns None.
         If TileSetManager doesn't contain tile_set_name, returns None.
         Otherwise, returns image size (width, height).
@@ -31,9 +35,9 @@ class TileSetManager(dict[str, TileSet]):
     def resize_tile_set(self, tile_set_name: str, new_size: tuple[int, int]) -> bool|None:
         '''
         Resizes all images in given TileSet.
+        
         If TileSetManager is empty, returns None.
         If TileSetManager doesn't contain tile_set_name, returns None.
-        
         If all tiles have an image and resize succeeds, returns True.
         Otherwise, returns False.
 

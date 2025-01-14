@@ -1,28 +1,33 @@
-
 '''
 Tile object implementation
 '''
 from PIL import Image
-from src.cells.direction import Direction
+from src.direction import Direction
 
 
 ALLOWED_ROTATION_DIRECTIONS = set(['left', 'right'])
 
 
 class Tile:
+    '''
+    A Tile represents a rectangle with four sides (NORTH, EAST, SOUTH, WEST),
+    containing an image. Each side has a 3 character long code that determines
+    which other tiles can touch it on that side.
+    '''
     def __init__(self, image: Image.Image|None = None, sides_code: str = '!!!!!!!!!!!!'):
         '''
         - image - Image as specified by PIL module
-        - sides_code - a 12 character long string, divided into 4 groups of 3 consecutive characters,
-                       where each group represents a code for one side of the image (north, east, south, west)
-                       starting from left to right: 'aaa bbb ccc ddd'
+        - sides_code - a 12 character long string, divided into 4 groups of 3
+                       consecutive characters, where each group represents a code
+                       for one side of the image (north, east, south, west) starting
+                       from left to right: 'aaa bbb ccc ddd'
         '''
         self.image = image
         self.sides_code = sides_code
 
 
     def __repr__(self) -> str:
-        return f'<image={self.image}, sides_code={self.sides_code}>'
+        return f'<sides_code={self.sides_code}, image={self.image}>'
 
 
     def rotate_tile(self, rotations: int = 0, rotate_direction: str = 'left') -> None:
@@ -35,13 +40,15 @@ class Tile:
         Valid direction values: left, right
         '''
         if rotate_direction not in ALLOWED_ROTATION_DIRECTIONS:
-            raise ValueError(f'Invalid rotate_direction: {rotate_direction}; Can only be left or right')
+            raise ValueError(f'Invalid rotate_direction: {rotate_direction}')
 
-        self.image = self.__get_rotated_image(rotations, rotate_direction)
-        self.sides_code = self.__get_shifted_sides_code(rotations * 3, rotate_direction)
+        self.image = self._get_rotated_image(rotations, rotate_direction)
+        self.sides_code = self._get_shifted_sides_code(rotations * 3, rotate_direction)
 
 
-    def __get_rotated_image(self, rotations: int = 0, rotate_direction: str = 'left') -> None|Image.Image:
+    def _get_rotated_image(self,
+                            rotations: int = 0,
+                            rotate_direction: str = 'left') -> None|Image.Image:
         '''
         Rotates @image by 90 * (rotations % 4) degrees.
         If tile has @image, returns copy of rotated image, otherwise None.
@@ -54,17 +61,18 @@ class Tile:
         if self.image is not None:
             rotation_angle = 90 * (rotations % 4)
             rotation_angle *= -1 if rotate_direction == 'right' else +1
-            rotated_image = self.image.rotate(rotation_angle)
-            
+            rotated_image = self.image.rotate(rotation_angle, expand=True)
+
             return rotated_image
 
         return None
 
 
-    def __get_shifted_sides_code(self, shifts = 0, shift_direction: str = 'left') -> str:
+    def _get_shifted_sides_code(self, shifts = 0, shift_direction: str = 'left') -> str:
         '''
-        Shifts @sides_code with wrap-around (first character becomes last and vice versa).
-
+        Shifts one character. Shifts @sides_code with wrap-around
+        (first character becomes last(left) and vice versa(right)).
+        
         - shifts - number of shifts
         - shift_direction - shifts direction, left or right
 
@@ -75,7 +83,7 @@ class Tile:
         '''
         shifts *= -1 if shift_direction == 'right' else +1
         shifted_sides_code = self.sides_code[shifts:] + self.sides_code[:shifts]
-        
+
         return shifted_sides_code
 
 
@@ -86,8 +94,8 @@ class Tile:
         '''
         if self.image is None:
             return None
-        
-        return self.image._size
+
+        return self.image.size
 
 
     def resize_image(self, new_size: tuple[int, int]) -> bool:
@@ -107,25 +115,50 @@ class Tile:
         return True
 
 
-    def does_sides_code_match(self, other: 'Tile', direction: Direction) -> bool:
+    def match_sides_code(self,
+                         other: 'Tile',
+                         self_direction: Direction,
+                         other_direction: Direction) -> bool:
         '''
-        Checks if sides_code along a shared side of two touching tiles match.
-        Returns true if sides_code match, and false, otherwise.
+        Checks if Tile@self and Tile@other match sides_code on given directions.
 
-        - other - other tile with which sides_code is matched
-        - direction - Direction of others' side to match self to
+        If sides_code match, returns True.
+        Otherwise, returns False.
 
-        If we want to compare Tile@selfs NORTH side to Tile@other SOUTH side, direction should be SOUTH.
+        - other - tile whose sides_code are matched to self
+        - other_direction - side Direction of Tile@other
+        - self_direction - side Direction of Tile@self
         '''
-        if isinstance(direction, Direction) is False:
-            raise TypeError('direction must be of type \'Direction\'')
+        if isinstance(self_direction, Direction) is False:
+            raise TypeError('self_direction must be of type \'Direction\'')
 
-        if direction.is_invalid():
-            raise ValueError('Invalid direction.')
+        if isinstance(other_direction, Direction) is False:
+            raise TypeError('other_direction must be of type \'Direction\'')
 
-        opposite_direction = direction.get_opposite()
+        if self_direction.is_invalid():
+            raise ValueError('Invalid direction: self_direction')
 
-        self_side_slice = opposite_direction.get_slice()
-        other_side_slice = direction.get_slice(reverse=True)
+        if other_direction.is_invalid():
+            raise ValueError('Invalid direction: other_direction')
 
-        return self.sides_code[self_side_slice] == other.sides_code[other_side_slice]
+        # get the correct 3-character group of codes corresponding to given Directions
+        
+        self_group = self._get_code_group(self_direction)
+        other_group = other._get_code_group(other_direction)
+
+        return self_group == other_group[::-1]
+
+
+    def _get_code_group(self, direction: Direction) -> str:
+        '''
+        Returns the correct 3 character group from sides_code based on the direction:
+        - NORTH - index range of [0:2], first set of 3 character in sides_code
+        - EAST - index range of [3:5], second set of 3 character in sides_code
+        - SOUTH - index range of [6:8], third set of 3 character in sides_code
+        - WEST - index range of [9:11], forth set of 3 character in sides_code
+        
+        + direction - direction from which, slice is calculated
+        '''
+        code_slice = direction.get_slice()
+        return self.sides_code[code_slice]
+

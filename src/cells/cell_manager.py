@@ -1,20 +1,20 @@
 import tkinter as tk
 from src.cells.cell import Cell
-from src.cells.highlight_data import HighlightData
-from src.cells.direction import Direction
+from src.highlight_data import HighlightData
+from src.direction import Direction
 from src.tiles.tile_set_manager import TileSetManager
 from src.tiles.tile import Tile
 
 
 class CellManager:
-    VALID_REDUCE_MOVES = [
-        (-1,  0, Direction.NORTH), # 
-        ( 0,  1, Direction.EAST),  # 
-        ( 1,  0, Direction.SOUTH), # 
-        ( 0, -1, Direction.WEST)   # 
+    VALID_REDUCE_MOVES = [ 
+        (-1,  0, Direction.SOUTH),
+        ( 0,  1, Direction.WEST),
+        ( 1,  0, Direction.NORTH),
+        ( 0, -1, Direction.EAST)
     ]
     
-    def __init__(self, rows: int, columns: int, cell_size: int, canvas: tk.Canvas, tile_set_manager: TileSetManager):
+    def __init__(self, rows: int, columns: int, cell_size: int|tuple[int, int], canvas: tk.Canvas, tile_set_manager: TileSetManager):
         self.cells: list[list[Cell]] = []
         self.rows = rows
         self.columns = columns
@@ -42,23 +42,23 @@ class CellManager:
 
 
     def reduce_possibilities_for(self, row: int, column: int, chosen_tile: Tile) -> None:
-        for i, j, dir in CellManager.VALID_REDUCE_MOVES:
+        for i, j, self_dir in CellManager.VALID_REDUCE_MOVES:
             if 0 <= row + i < self.rows and 0 <= column + j < self.columns:
-                self.cells[row + i][column + j].reduce_possibilities(chosen_tile, dir)
+                self.cells[row + i][column + j].reduce_possibilities(chosen_tile, self_dir, self_dir.get_opposite())
 
 
     def getCellIndices(self, x: int, y: int) -> tuple[int, int]:
         if self.are_valid_cell_coordinates(x, y) is not True:
             return (-1, -1)
         
-        column = x // self.cell_size
-        row = y // self.cell_size
+        column = x // self.cell_size[0]
+        row = y // self.cell_size[1]
 
         return row, column
 
 
     def are_valid_cell_coordinates(self, row: int, column: int) -> bool:
-        return 0 <= row < self.rows * self.cell_size and 0 <= column < self.columns * self.cell_size
+        return 0 <= row < self.rows * self.cell_size[0] and 0 <= column < self.columns * self.cell_size[1]
 
 
     def load_cells_with_current_tile_set(self, bool_variable) -> None:
@@ -76,7 +76,7 @@ class CellManager:
         for row in range(self.rows):
             row_of_cells = []
             for column in range(self.columns):
-                cell = Cell(row, column, tile_set_image_size, self.canvas, tile_set=tile_set)
+                cell = Cell(row, column, tile_set_image_size, tile_set, self.canvas)
                 row_of_cells.append(cell)
                 
                 if bool_variable.get() is True:
