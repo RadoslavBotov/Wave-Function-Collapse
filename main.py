@@ -5,7 +5,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
 
-from src.formatters.image_config_formatter import ConfigFormatter
+from src.formatters.image_config_formatter import format_image_configs
 from src.readers.yaml_reader import read_config_file
 from src.readers.image_reader import read_images
 from src.cells.cell_manager import CellManager
@@ -90,7 +90,7 @@ def main():
     for tile_set_name in tile_set_dirs:
         tile_set_configs = read_config_file(Path(tile_path, tile_set_name, f'{tile_set_name}.yaml'))
         
-        tile_set_formatted_configs = ConfigFormatter.format_item(tile_set_configs)
+        tile_set_formatted_configs = format_image_configs(tile_set_configs)
 
         tile_set_images = read_images(Path(tile_path, tile_set_name))
 

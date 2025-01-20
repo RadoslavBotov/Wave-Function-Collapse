@@ -6,16 +6,9 @@ from src.tiles.tile_set import TileSet
 
 class TileSetManager(dict[str, TileSet]):
     '''
-    qwe
+    A dict of TileSets.
+    Format should be {'tile_set_name': TileSet}.
     '''
-    def __init__(self, *args, **kwargs):
-        '''
-        A dict of TileSets.
-        Format should be {'tile_set_name': TileSet}.
-        '''
-        super(TileSetManager, self).__init__(*args, **kwargs)
-
-
     def get_tile_set_image_size(self, tile_set_name: str) -> tuple[int, int]|None:
         '''
         Returns the size of a Tile in a TileSet.

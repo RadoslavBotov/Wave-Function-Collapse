@@ -1,0 +1,10 @@
+# Description 1
+setting1: value1
+
+# Description 2
+setting2: value2
+
+# Description 3
+settings4:
+  sub41: value4
+  sub42: value5
