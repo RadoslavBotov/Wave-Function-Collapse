@@ -1,16 +1,30 @@
+'''
+Cell class
+'''
 import random
 from tkinter import Canvas
 
-from PIL import ImageTk
+from PIL import ImageTk, Image
 
-from src.constants import ERROR_BACKGROUND_TILE
-from src.direction import Direction
 from src.tiles.tile_set import TileSet
 from src.tiles.tile import Tile
+from src.constants import ERROR_BACKGROUND_TILE
+from src.direction import Direction
+from src.highlight_data import HighlightData
 
 
 class Cell:
-    def __init__(self, row: int, column: int, cell_size: int|tuple[int, int], tile_set: TileSet, canvas: Canvas) -> None:
+    # pylint: disable=too-many-instance-attributes
+    '''
+    Contains information about its place on a grid,
+    a TileSet to choose Tile's from,
+    and methods to draw on tk.Canvas.
+    '''
+    def __init__(self,
+                 row: int,
+                 column: int,
+                 cell_size: int|tuple[int, int],
+                 tile_set: TileSet) -> None:
         '''
         - row - row in grid
         - column - column in grid
@@ -22,12 +36,10 @@ class Cell:
         self.column = column
         self.cell_size = cell_size if isinstance(cell_size, tuple) else (cell_size, cell_size)
         self.tile_set = tile_set
-        self.canvas = canvas
-
         '''
-        + _chosen_tile - allows image to be resized
+        + _chosen_tile - allows image to be resized (PhotoImage can't be resized nicely)
         + _chosen_image - PhotoImage reference, so that canvas displays image
-        + _image_id - image id in canvas
+        + _image_id - PhotoImage id in canvas
         + _text_id - text id in canvas
         + _is_collapsed - tile was chosen to display image or not
         '''
@@ -38,91 +50,133 @@ class Cell:
         self._is_collapsed: bool = False
 
 
-    def update_tile_sizes(self) -> None:
+    def get_tile_set_size(self) -> int:
         '''
-        Updates size of images in TileSet to @cell_size.
+        Get size of TileSet.
+        
+        If Cell is collapsed, return 0.
         '''
-        if self.cell_size != self.tile_set.get_tile_image_size():
-            self.tile_set.resize_tiles(self.cell_size)
+        if self._is_collapsed is True:
+            return 0
+
+        return len(self.tile_set)
+
+
+    def get_chosen_image(self, background_color: str = 'white') -> Image.Image:
+        '''
+        
+        '''
+        if (   self._is_collapsed is False
+            or self._chosen_tile is None
+            or self._chosen_tile.image is None):
+            return Image.new('RGB', self.cell_size, color=background_color)
+
+        return self._chosen_tile.image
+
+
+    def resize_cell(self, new_cell_size: tuple[int, int]) -> bool:
+        '''
+        Resizes Cell and TileSet to new_cell_size.
+        '''
+        self.cell_size = new_cell_size
+
+        if self._chosen_tile is not None:
+            self._chosen_tile.resize_image(self.cell_size)
+
+        return self.tile_set.resize_tiles(self.cell_size)
 
 
     def collapse(self) -> Tile|None:
         '''
-        Chose of the the possible Tile's from the TileSet.
-        
+        Chose one of the the possible Tile's from the TileSet.
+
         If Cell is already collapsed, returns None.
         If Cell has no Tile's to chose from, returns ERROR_BACKGROUND_TILE.
-        If there are no possibilities (len(TileSet) == 0), chose the ERROR_BACKGROUND_IMAGE.
-        If cell is already collapsed, returns None.
         Otherwise, returns a random Tile's from TileSet.
         '''
         if self._is_collapsed is True:
             return None
 
         self._is_collapsed = True
-        
+
         if len(self.tile_set) == 0:
-            tile = ERROR_BACKGROUND_TILE 
+            tile = ERROR_BACKGROUND_TILE
         else:
             tile = random.choice(self.tile_set)
 
         return tile
 
 
-    def reduce_possibilities(self, tile_to_match: Tile, self_direction: Direction, other_direction: Direction) -> int|None:
+    def reduce_tile_set(self, other: Tile,
+                        self_direction: Direction,
+                        other_direction: Direction) -> int|None:
         '''
         Removes Tile's from TileSet, whose sides_code do not match
         the sides_code of tile_to_match on the given direction.
-        
+
+        If Cell is not collapsed, returns new size of TileSet after reduction.
         If Cell is collapsed, does not reduce possibilities, as it's not needed.
-        
-        - tile_to_match - tile whose sides_code are matched to TileSet
-        - direction - Direction of side on @tile_to_match, that we match on
+
+        - other - tile whose sides_code are matched to TileSet
+        - self_direction - Direction of side on @self that is matched
+        - other_direction - Direction of side on @other that is matched
         '''
         if self._is_collapsed is True:
             return None
 
-        reduced_set = self.tile_set.get_reduced_tile_set(tile_to_match, self_direction, other_direction)
+        reduced_set = self.tile_set.get_reduced_tile_set(other, self_direction, other_direction)
         self.tile_set = reduced_set
-        print('!')
+
+        return len(self.tile_set)
 
 
-    def update(self):
-        if self._text_id is not None:
-            # self.canvas.itemconfig(self._text_id, text=len(self.tile_set))
-            return self._text_id
-
-
-    def draw(self, tile: Tile) -> None:
+    def draw(self, tile: Tile, canvas: Canvas) -> None:
+        '''
+        Draws given Tile on Canvas, with respect to the Cell's grid
+        coordinates and cell_size.
+        '''
+        self._chosen_tile = tile
         self._chosen_image = ImageTk.PhotoImage(tile.image)
 
-        self._image_id = self.canvas.create_image(
+        self._image_id = canvas.create_image(
             self.column * self.cell_size[1],
             self.row * self.cell_size[0],
             image=self._chosen_image,
             anchor='nw'
         )
 
+        # remove extra information from cell on draw
         if self._text_id is not None:
-            self.canvas.delete(self._text_id)
+            canvas.delete(self._text_id)
 
 
-    def clear(self):
+    def clear(self, canvas: Canvas) -> None:
+        '''
+        Clears Cell's image and extra information from canvas
+        if they were drawn.
+        '''
         if self._image_id is not None:
-            self.canvas.delete(self._image_id)
+            canvas.delete(self._image_id)
 
         if self._text_id is not None:
-            self.canvas.delete(self._text_id)
+            canvas.delete(self._text_id)
 
 
-    def highlight(self, highlight_data):
+    def highlight(self, highlight_data: HighlightData, canvas: Canvas) -> None:
+        '''
+        Draw a rectangle on the Canvas around the Cell that was hovered over,
+        with respect to the Cell's grid coordinates and cell_size.
+        
+        - highlight_data - contains coordinates were to draw the rectangle
+        '''
+        # draw rectangle only when a new cell is hovered over
         if highlight_data.check_match(self.row, self.column):
             return None
 
         cell_size_width = self.cell_size[0]
         cell_size_height = self.cell_size[1]
 
-        cur_rect = self.canvas.create_rectangle(
+        current_rectangle = canvas.create_rectangle(
             self.column * cell_size_height,
             self.row * cell_size_width,
             self.column  * cell_size_height + cell_size_height,
@@ -130,27 +184,45 @@ class Cell:
         )
 
         if highlight_data.last_rect is not None:
-            self.canvas.delete(highlight_data.last_rect)
+            canvas.delete(highlight_data.last_rect)
 
-        highlight_data.update(self.row, self.column,cur_rect)
+        highlight_data.update(self.row, self.column, current_rectangle)
+
+        return None
 
 
-    def enable_extra_information(self):
+    def update_extra_information(self, canvas: Canvas, tile_set_length: int|None = None) -> None:
+        '''
+        Updates text for TileSet amount of Cell, if extra information is enabled.
+        '''
+        if self._text_id is not None and tile_set_length is not None:
+            canvas.itemconfig(self._text_id, text=tile_set_length)
+
+
+    def enable_extra_information(self, canvas: Canvas) -> None:
+        '''
+        Draws the number of tiles in TileSet on Canvas.
+        '''
         if self._is_collapsed is True:
             return None
 
         if self._text_id is not None:
             return None
 
-        self._text_id = self.canvas.create_text(
+        self._text_id = canvas.create_text(
             self.column * self.cell_size[1] + self.cell_size[1] // 2,
             self.row * self.cell_size[0] + self.cell_size[0] // 2,
             text=len(self.tile_set),
             anchor='center'
         )
 
+        return None
 
-    def disable_extra_information(self):
+
+    def disable_extra_information(self, canvas: Canvas) -> None:
+        '''
+        Erases the number of tiles in TileSet drawn on Canvas.
+        '''
         if self._text_id is not None:
-            self.canvas.delete(self._text_id)
+            canvas.delete(self._text_id)
             self._text_id = None

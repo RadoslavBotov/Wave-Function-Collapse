@@ -22,7 +22,7 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 + Choose from available tiles sets from GUI ✅
 + Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ❌
 + Detection if grid is in a dead-end state (some cell has 0 possibilities left) ❌
-+ Save current state of canvas as an image ❌
++ Save current state of canvas as an image ✅
 
 ## Technologies
 

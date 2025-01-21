@@ -33,16 +33,17 @@ def collapse(event, cell_manager: CellManager):
         cell_manager.reduce_possibilities_for(row, column, chosen_tile)
 
 
-def save_image():
-    file_types = [('png', '*png'), ('.jpeg', '*.jpeg')]
+def save_image(cell_manager: CellManager):
+    file_types = [('png', '*.png'), ('jpeg', '*.jpeg')]
     
     file = filedialog.asksaveasfilename(title='Save Current Image As',
                                         filetypes=file_types,
-                                        initialdir=os.getcwd())
+                                        initialdir=os.getcwd(),
+                                        defaultextension="*.*")
     
     if file != '':
-        # print(file)
-        pass
+        image = cell_manager.get_current_image()
+        image.save(file)
 
 
 def chose_tile_set(bool_variable, tile_set_name, cell_manager):
@@ -113,7 +114,7 @@ def main():
     menubar = tk.Menu(root)
 
     file_menu = tk.Menu(menubar, tearoff=0)
-    file_menu.add_command(label="save as", command=save_image)
+    file_menu.add_command(label="save as", command=lambda cm=cm:save_image(cm))
     menubar.add_cascade(menu = file_menu, label = "File")
 
     tile_set_menu = tk.Menu(menubar, tearoff=0)

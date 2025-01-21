@@ -109,7 +109,7 @@ class Tile:
         if self.image is None:
             return False
 
-        if self.get_image_size() != new_size:
+        if self.get_image_size() == new_size:
             self.image = self.image.resize(new_size)
 
         return True
