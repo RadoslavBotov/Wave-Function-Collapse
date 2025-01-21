@@ -32,7 +32,12 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 + View requirements.txt for other
 
 ## Startup
-With Wave Function Collapse as working directory start with ```python main.py```.
+> Activate virtual environment.
+
+> Install requirements.txt.
+
+> Run ```python main.py``` with Wave Function Collapse as working directory.
+
 
 ## Tile format
 A Tile has an image and side_codes.

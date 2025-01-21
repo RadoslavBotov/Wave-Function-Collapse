@@ -1,0 +1,12 @@
+#
+default_cell_rows: 10
+default_cell_columns: 10
+
+#
+default_cell_size: 40
+
+#
+default_tile_path: 'tilesets'
+
+#
+default_tile_set: 'basic_tiles_with_rotations'

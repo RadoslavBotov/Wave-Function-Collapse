@@ -17,7 +17,7 @@ class CellManager:
     def __init__(self,
                  rows: int,
                  columns: int,
-                 cell_size: tuple[int, int],
+                 cell_size: int|tuple[int, int],
                  canvas: tk.Canvas,
                  tile_set_manager: TileSetManager) -> None:
         '''
@@ -26,7 +26,7 @@ class CellManager:
         self.cells: list[list[Cell]] = []
         self.rows = rows
         self.columns = columns
-        self.cell_size = cell_size
+        self.cell_size = cell_size if isinstance(cell_size, tuple) else (cell_size, cell_size)
         self.canvas = canvas
         self.tile_set_manager = tile_set_manager
         
