@@ -1,15 +1,22 @@
+'''Highlight data'''
 from dataclasses import dataclass
 
 
 @dataclass
 class HighlightData:
+    '''
+    Indicates which cell was highlighted last on mouse hover over the canvas.
+    '''
     def __init__(self, last_row = -1, last_column = -1, last_rect = None):
         self.last_row = last_row
         self.last_column = last_column
         self.last_rect = last_rect
 
 
-    def update(self, new_row: int|None = None, new_column: int|None = None, new_last_rect: int|None = None) -> None:
+    def update(self,
+               new_row: int|None = None,
+               new_column: int|None = None,
+               new_last_rect: int|None = None) -> None:
         '''
         Updates data. If an argument is None, previous value, of that attribute, is kept.
         '''

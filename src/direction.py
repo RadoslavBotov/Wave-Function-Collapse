@@ -1,7 +1,13 @@
+'''
+Direction enum
+'''
 from enum import IntEnum
 
 
 class Direction(IntEnum):
+    '''
+    Indicates which index corresponds to which direction in the sides_code of tiles
+    '''
     INVALID = -1
 
     NORTH = 0
@@ -22,10 +28,10 @@ class Direction(IntEnum):
         Returns the opposite cardinal direction.
         '''
         match self:
-           case Direction.NORTH: return Direction.SOUTH
-           case Direction.EAST : return Direction.WEST
-           case Direction.SOUTH: return Direction.NORTH
-           case Direction.WEST : return Direction.EAST
+            case Direction.NORTH: return Direction.SOUTH
+            case Direction.EAST : return Direction.WEST
+            case Direction.SOUTH: return Direction.NORTH
+            case Direction.WEST : return Direction.EAST
 
         return Direction.INVALID
 

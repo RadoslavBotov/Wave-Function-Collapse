@@ -284,7 +284,7 @@ def test_get_code_group_north():
     tile = Tile(sides_code=sides_code)
     
     # Act
-    code_group = tile._get_code_group(direction)
+    code_group = tile.get_code_group(direction)
     
     # Assert
     assert code_group == '123'
@@ -297,7 +297,7 @@ def test_get_code_group_east():
     tile = Tile(sides_code=sides_code)
     
     # Act
-    code_group = tile._get_code_group(direction)
+    code_group = tile.get_code_group(direction)
     
     # Assert
     assert code_group == 'abc'
@@ -310,7 +310,7 @@ def test_get_code_group_south():
     tile = Tile(sides_code=sides_code)
     
     # Act
-    code_group = tile._get_code_group(direction)
+    code_group = tile.get_code_group(direction)
     
     # Assert
     assert code_group == '456'
@@ -323,7 +323,7 @@ def test_get_code_group_west():
     tile = Tile(sides_code=sides_code)
     
     # Act
-    code_group = tile._get_code_group(direction)
+    code_group = tile.get_code_group(direction)
     
     # Assert
     assert code_group == 'def'

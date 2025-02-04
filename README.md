@@ -83,56 +83,6 @@ where i in [0:I] (If rotations is missing, it will be tarted as 'rotations: 0'):
 
 For practical examples, look at asymmetrical_tile_set(all formats are used there).
 
-## Simple class structure
-
-### Base classes:
-    
-+ Tile - responsible for data storage
-    + image: Image - image to be displayed on canvas
-    + side_constraints: tuple with 4 int's - indicates constraint for each side ot tile (matching side constrains can connect)
-
-+ TileManager - responsible for loading images and creating tiles
-    + tiles: list of Tile's - 
-    + tile_path: str - path to image directory
-    + tile_descriptions: str - path to a yaml files containing a description of images(image file name, side constraints and rotations a given image can have)
-
-+ Cell - responsible for data storage
-    + size: int - indicating 
-    + possibilities: list of Tile's - all possible tiles for this cell
-    + collapsed: bool, indicating whether this cell has chosen a tile
-
-+ CellManager - responsible for drawing a cells' state on canvas, highlighting cell on mouse hover, 
-    + cells: list of Cell's - 
-    + dim: int - dimension of cell grid(cells[dim x dim])
-    + size: int - image side length in pixels
-    + _highlight_data: HighlightData - private name for highlighting cell on mouse hover
-    + _moves: list of tuples (i, j, direction) -> when checking adjacent cells for reducing entropy on cell collapse
-
-+ WaveFunctionCollapse - responsible for root Tk() window and binding events and configuration loading
-with tile/cell from TileManager/CellManager
-    + configs: list of configurations for the program - loaded from ConfigLoader and configs.yaml file
-    + tile_manager: TileManager
-    + cell_manager: CellManager
-    + root: tkinter.Tk() - root window for our GUI 
-    + canvas: tkinter.Canvas() - used to draw tiles on
-        + implements a wave function collapse algorithm to automatically chose cell with least entropy 
-
-### Helper classes:
-    
-+ ConfigLoader - loads startup program configurations from a config.yaml file
-    + path: path to a config.yaml file with program configurations
-    + configs: loaded configurations
-
-+ ImageLoader - loads images from provided path with specified extension
-    + path: str - path to directory containing image files
-    + extension: str - extension of provided image files
-    + loaded: loaded images
-
-+ HighlightData - stores data used to highlight cells on mouse hover more efficiently
-    + last_row: int - last row in grid mouse hovered
-    + last_column: int - last row in grid mouse hovered
-    + last_highlight: tkinter id (int) - id of last drawn highlight rectangle
-
 # Resources and inspirations
 
 + Javascript implementation in p5.js: [The Coding Train](https://www.youtube.com/watch?v=rI_y2GAlQFM)

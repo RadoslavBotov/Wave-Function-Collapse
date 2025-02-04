@@ -33,7 +33,7 @@ class TileSet(list[Tile]):
         '''
         if len(self) == 0:
             return False
-        
+
         return all(tile.resize_image(new_size) for tile in self)
 
 
@@ -44,7 +44,7 @@ class TileSet(list[Tile]):
         '''
         Removes Tile's from TileSet, whose sides_code do not match
         the sides_code of @other_tile on the given directions.
-        
+
         - other_tile - tile whose sides_code are matched to TileSet
         - tile_set_direction - Direction of side for TileSet Tiles'
         - other_direction - Direction of side for other_tile

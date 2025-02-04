@@ -13,12 +13,12 @@ from src.tiles.tile_set import TileSet
 
 
 def highlightCell(event, cell_manager: CellManager):
-    row, column = cell_manager.getCellIndices(event.x, event.y)
+    row, column = cell_manager.get_cell_indices(event.x, event.y)
     cell_manager.highlight_cell(row, column)
 
 
 def collapse(event, cell_manager: CellManager):
-    row, column = cell_manager.getCellIndices(event.x, event.y)
+    row, column = cell_manager.get_cell_indices(event.x, event.y)
     chosen_tile = cell_manager.collapse(row, column)
     if chosen_tile is not None:
         cell_manager.reduce_possibilities_for(row, column, chosen_tile)

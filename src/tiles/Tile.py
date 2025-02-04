@@ -142,23 +142,22 @@ class Tile:
             raise ValueError('Invalid direction: other_direction')
 
         # get the correct 3-character group of codes corresponding to given Directions
-        
-        self_group = self._get_code_group(self_direction)
-        other_group = other._get_code_group(other_direction)
+
+        self_group = self.get_code_group(self_direction)
+        other_group = other.get_code_group(other_direction)
 
         return self_group == other_group[::-1]
 
 
-    def _get_code_group(self, direction: Direction) -> str:
+    def get_code_group(self, direction: Direction) -> str:
         '''
         Returns the correct 3 character group from sides_code based on the direction:
         - NORTH - index range of [0:2], first set of 3 character in sides_code
         - EAST - index range of [3:5], second set of 3 character in sides_code
         - SOUTH - index range of [6:8], third set of 3 character in sides_code
         - WEST - index range of [9:11], forth set of 3 character in sides_code
-        
+
         + direction - direction from which, slice is calculated
         '''
         code_slice = direction.get_slice()
         return self.sides_code[code_slice]
-

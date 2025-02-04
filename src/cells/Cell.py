@@ -64,7 +64,7 @@ class Cell:
 
     def get_chosen_image(self, background_color: str = 'white') -> Image.Image:
         '''
-        
+        Returns the image chosen when cell was collapsed.
         '''
         if (   self._is_collapsed is False
             or self._chosen_tile is None
