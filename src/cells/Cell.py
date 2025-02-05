@@ -6,6 +6,7 @@ from tkinter import Canvas
 
 from PIL import ImageTk, Image
 
+from src.cells.cell_base import CellBase
 from src.tiles.tile_set import TileSet
 from src.tiles.tile import Tile
 from src.constants import ERROR_BACKGROUND_TILE
@@ -13,7 +14,7 @@ from src.direction import Direction
 from src.highlight_data import HighlightData
 
 
-class Cell:
+class Cell(CellBase):
     # pylint: disable=too-many-instance-attributes
     '''
     Contains information about its place on a grid,
@@ -32,9 +33,8 @@ class Cell:
         - tile_set - TileSet from which Tiles are chosen
         - canvas - tkinter canvas to draw on
         '''
-        self.row = row
-        self.column = column
-        self.cell_size = cell_size if isinstance(cell_size, tuple) else (cell_size, cell_size)
+        cell_size = (cell_size, cell_size) if isinstance(cell_size, int) else cell_size
+        super().__init__(row, column, cell_size)
         self.tile_set = tile_set
         '''
         + _chosen_tile - allows image to be resized (PhotoImage can't be resized nicely)
@@ -50,14 +50,28 @@ class Cell:
         self._is_collapsed: bool = False
 
 
+    def __repr__(self) -> str:
+        return (f'<row={self.row},'
+                f'column={self.column},'
+                f'tile_set_size={self.get_tile_set_size()}>')
+
+
+    def get_coordinates(self) -> tuple[int, int]:
+        '''
+        Returns the coordinates of cell to be used
+        as cell grid indexes.
+        '''
+        return self.row, self.column
+
+
     def get_tile_set_size(self) -> int:
         '''
         Get size of TileSet.
         
-        If Cell is collapsed, return 0.
+        If Cell is collapsed, return -1.
         '''
         if self._is_collapsed is True:
-            return 0
+            return -1
 
         return len(self.tile_set)
 
@@ -101,6 +115,7 @@ class Cell:
 
         if len(self.tile_set) == 0:
             tile = ERROR_BACKGROUND_TILE
+            tile.resize_image(self.cell_size)
         else:
             tile = random.choice(self.tile_set)
 

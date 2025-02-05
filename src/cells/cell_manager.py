@@ -3,6 +3,7 @@ CellManager
 '''
 import tkinter as tk
 from PIL import Image
+from src.cells.cell_manager_base import CellManagerBase
 from src.constants import VALID_REDUCE_MOVES
 from src.cells.cell import Cell
 from src.highlight_data import HighlightData
@@ -10,7 +11,7 @@ from src.tiles.tile_set_manager import TileSetManager
 from src.tiles.tile import Tile
 
 
-class CellManager:
+class CellManager(CellManagerBase):
     '''
     Provides methods to manage a cell grid.
     '''
@@ -20,10 +21,8 @@ class CellManager:
                  cell_size: int|tuple[int, int],
                  canvas: tk.Canvas,
                  tile_set_manager: TileSetManager) -> None:
-        self.cells: list[list[Cell]] = []
-        self.rows = rows
-        self.columns = columns
-        self.cell_size = cell_size if isinstance(cell_size, tuple) else (cell_size, cell_size)
+        cell_size = (cell_size, cell_size) if isinstance(cell_size, int) else cell_size
+        super().__init__(rows, columns, cell_size)
         self.canvas = canvas
         self.tile_set_manager = tile_set_manager
 
@@ -100,6 +99,7 @@ class CellManager:
         
         '''
         tile_set = self.tile_set_manager[self._current_tile_set]
+        tile_set.resize_tiles(self.cell_size)
         tile_set_image_size = tile_set.get_tile_image_size()
         if tile_set_image_size is None:
             raise ValueError('TileSet with None image.')

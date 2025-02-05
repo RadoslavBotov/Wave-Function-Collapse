@@ -3,6 +3,7 @@
 ![Icon](misc/icon1.png)
 ![Icon](misc/icon2.png)
 ![Icon](misc/icon3.png)
+![Icon](misc/icon4.png)
 
 ## Introduction
 
@@ -15,13 +16,12 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 
 ## Functionality
 
-+ Resizable grid to easily change generated image size ✅❌
++ Resizable grid to easily change generated image size (only from configs) ✅
 + Manual mode where user can choose tiles randomly ✅
-+ Manual mode where user can choose tiles from a list of valid possibilities ❌
 + Add new tilesets easily by providing files(png or jpeg) and describing their side codes in a yaml file ✅
 + Choose from available tiles sets from GUI ✅
-+ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ❌
-+ Detection if grid is in a dead-end state (some cell has 0 possibilities left) ❌
++ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ✅
++ Detection if grid is in a dead-end state (some cell has 0 possibilities left) ✅
 + Save current state of canvas as an image ✅
 
 ## Technologies
@@ -33,11 +33,23 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 
 ## Startup
 > Activate virtual environment.
-
+>
 > Install requirements.txt.
-
+>
 > Run ```python main.py``` with Wave Function Collapse as working directory.
 
+## Menus
+
++ File Menu
+    + Save As - save current canvas state as an image
++ Tile Sets - choose from available TileSet's / if you want to clean current canvas, choose a TileSet
+    + asymmetrical_tile_set - 18 tile variations / demonstrates asymmetrical images / CAN dead end
+    + circuit_tile_set - 88 tile variations / demonstrates more complicated images / CAN dead end
+    + default_tile_set - 16 tile variations / demonstrates basic images / CANNOT dead end
++ Cells
+    + Show extra information - draw amount of tiles available in each cell to chose from
++ Solver
+    + solver - automatically solve and fills current state of canvas / CANNOT be interrupted
 
 ## Tile format
 A Tile has an image and side_codes.

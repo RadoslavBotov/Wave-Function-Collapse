@@ -1,7 +1,6 @@
 '''
 TileSet list implementation
 '''
-from PIL import Image
 from src.direction import Direction
 from src.tiles.tile import Tile
 
@@ -55,30 +54,3 @@ class TileSet(list[Tile]):
             in self
             if tile.match_sides_code(other_tile, tile_set_direction, other_direction) is True
         )
-
-
-    # TODO: remove method to a main function
-    @classmethod
-    def create_tile_set(cls, configs: dict, images: dict[str, Image.Image]) -> 'TileSet':
-        '''
-        Factory method for creating a TileSet.
-
-        - name - tile set name
-        - configs - 
-        - images - 
-        '''
-        tiles = []
-
-        for image_name in configs:
-            image_configs = configs[image_name]
-            side_codes = image_configs['directions']
-
-            original_tile = Tile(images[image_name], side_codes)
-            tiles.append(original_tile)
-
-            for rotations_amount, rotation_direction in image_configs['rotations']:
-                rotated_tile = Tile(images[image_name], side_codes)
-                rotated_tile.rotate_tile(rotations_amount, rotation_direction)
-                tiles.append(rotated_tile)
-
-        return TileSet(tiles)
