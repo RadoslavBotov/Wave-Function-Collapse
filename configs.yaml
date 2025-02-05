@@ -11,5 +11,5 @@ default_tile_path: 'tilesets'
 # tile set that is loaded on program start
 default_tile_set: 'basic_tiles_with_rotations'
 
-# time between collapsing cells in seconds?
+# time between collapsing cells in seconds
 default_solver_delay: 0.01

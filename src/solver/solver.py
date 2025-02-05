@@ -5,19 +5,19 @@ import random
 from time import sleep
 
 from src.cells.cell import Cell
-from src.cells.cell_manager_base import CellManagerBase
+from src.cells.cell_manager import CellManager
 
 
 class Solver:
     '''
     Constraint Satisfaction Problem Solver
     '''
-    def __init__(self, cell_manager: CellManagerBase, delay = 0.1) -> None:
+    def __init__(self, cell_manager: CellManager, delay = 0.1) -> None:
         self.cell_manager = cell_manager
         self.delay = delay
 
 
-    def start(self):
+    def start(self, update_canvas: bool = True) -> None:
         '''
         Solves the Constraint Satisfaction Problem of choosing appropriate tiles
         for each cell in grid.
@@ -44,11 +44,12 @@ class Solver:
                 self.cell_manager.reduce_possibilities_for(row, column, chosen_tile)
 
             # update canvas and sleep
-            self.cell_manager.canvas.update_idletasks()
-            sleep(self.delay)
+            if update_canvas is True:
+                self.cell_manager.canvas.update_idletasks()
+                sleep(self.delay)
 
 
-    def check_invalid(self):
+    def check_invalid(self) -> None:
         '''
         Check if any cell is invalid(tile_set_size == 0) and collapse it
         without updating neighboring cells.
@@ -80,7 +81,7 @@ class Solver:
         Returns a list of cells with smallest tile_set size.
         '''
         # sort cells by tile set length ASC
-        min_cell_score = self._get_min_cell_score(cells)
+        min_cell_score = self._get_min_cells_score(cells)
 
         return [
             cell
@@ -91,7 +92,7 @@ class Solver:
         ]
 
 
-    def _get_min_cell_score(self, cells: list[Cell]) -> int:
+    def _get_min_cells_score(self, cells: list[Cell]) -> int:
         '''
         Returns the smallest tile set size in cells.
         '''
