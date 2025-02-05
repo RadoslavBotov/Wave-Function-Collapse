@@ -3,7 +3,7 @@ default_cell_rows: 10
 default_cell_columns: 10
 
 # size of cells on start -> int or (int, int)
-default_cell_size: 40
+default_cell_size: [40, 40]
 
 # path to directory containing tile sets
 default_tile_path: 'tilesets'

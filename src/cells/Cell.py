@@ -154,8 +154,8 @@ class Cell(CellBase):
         self._chosen_image = ImageTk.PhotoImage(tile.image)
 
         self._image_id = canvas.create_image(
-            self.column * self.cell_size[1],
-            self.row * self.cell_size[0],
+            self.column * self.cell_size[0],
+            self.row * self.cell_size[1],
             image=self._chosen_image,
             anchor='nw'
         )
@@ -188,8 +188,8 @@ class Cell(CellBase):
         if highlight_data.check_match(self.row, self.column):
             return None
 
-        cell_size_width = self.cell_size[0]
-        cell_size_height = self.cell_size[1]
+        cell_size_width = self.cell_size[1]
+        cell_size_height = self.cell_size[0]
 
         current_rectangle = canvas.create_rectangle(
             self.column * cell_size_height,
