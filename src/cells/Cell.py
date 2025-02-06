@@ -6,7 +6,6 @@ from tkinter import Canvas
 
 from PIL import ImageTk, Image
 
-from src.cells.cell_base import CellBase
 from src.tiles.tile_set import TileSet
 from src.tiles.tile import Tile
 from src.constants import ERROR_BACKGROUND_TILE
@@ -14,7 +13,7 @@ from src.direction import Direction
 from src.highlight_data import HighlightData
 
 
-class Cell(CellBase):
+class Cell:
     # pylint: disable=too-many-instance-attributes
     '''
     Contains information about its place on a grid,
@@ -33,8 +32,9 @@ class Cell(CellBase):
         - tile_set - TileSet from which Tiles are chosen
         - canvas - tkinter canvas to draw on
         '''
-        cell_size = (cell_size, cell_size) if isinstance(cell_size, int) else cell_size
-        super().__init__(row, column, cell_size)
+        self.row = row
+        self.column = column
+        self.cell_size = (cell_size, cell_size) if isinstance(cell_size, int) else cell_size
         self.tile_set = tile_set
         '''
         + _chosen_tile - allows image to be resized (PhotoImage can't be resized nicely)
@@ -78,7 +78,9 @@ class Cell(CellBase):
 
     def get_chosen_image(self, background_color: str = 'white') -> Image.Image:
         '''
-        Returns the image chosen when cell was collapsed.
+        Returns the chosen image if one was chosen.
+        Otherwise generate a default placeholder:
+        ('RGB', self.cell_size, color=background_color).
         '''
         if (   self._is_collapsed is False
             or self._chosen_tile is None
@@ -91,13 +93,19 @@ class Cell(CellBase):
     def resize_cell(self, new_cell_size: tuple[int, int]) -> bool:
         '''
         Resizes Cell and TileSet to new_cell_size.
+        If cell has a _chosen_tile, resize only it,
+        without whole TileSet.
         '''
-        self.cell_size = new_cell_size
-
         if self._chosen_tile is not None:
-            self._chosen_tile.resize_image(self.cell_size)
+            self._chosen_tile.resize_image(new_cell_size)
+            self.cell_size = new_cell_size
+            return True
 
-        return self.tile_set.resize_tiles(self.cell_size)
+        if self.tile_set.resize_tiles(new_cell_size) is True:
+            self.cell_size = new_cell_size
+            return True
+
+        return False
 
 
     def collapse(self) -> Tile|None:
