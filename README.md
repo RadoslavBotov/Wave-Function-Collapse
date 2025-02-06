@@ -7,10 +7,10 @@
 
 ## Introduction
 
-> Model synthesis a.k.a. wave function collapse or 'wfc' are names for a family of constraint-solving algorithms commonly used in procedural generation, especially in the video game industry.
+> Model synthesis a.k.a. wave function collapse or 'wfc' are names for a family of constraint-solving algorithms (CSP - constrain satisfaction problem) commonly used in procedural generation, especially in the video game industry.
 > -- Wikipedia
 
-This project is a Python implementation of the Wave Function Collapse algorithm for procedural image generation with a base tile image-set.
+This project is a Python implementation of the Wave Function Collapse algorithm for procedural image generation with a base tile image-set, written by Radsolav Botov from Sofia University "St. Kliment Ohridski" Faculty of Mathematics and Informatics for the course 'Programming with Python, 2024/25'.
 
 Chooses a random, not-collapsed, cell from the grid with the least amount of entropy and collapses it to a specific tile. Then updates neighboring cells possibilities, reducing their entropy, and repeats until all cells have been collapsed.
 
@@ -104,3 +104,5 @@ For practical examples, look at asymmetrical_tile_set(all formats are used there
 + Blender and Godot implementation: [Martin Donald](https://www.youtube.com/watch?v=2SuvO4Gi7uY&t=429s)
 + Classic mathematic interpretation: [Wave Function Collapse](https://en.wikipedia.org/wiki/Wave_function_collapse)
 + Constraint-solving algorithm interpretation: [Model Synthesis](https://en.wikipedia.org/wiki/Model_synthesis)
+
+- Wave-Function-Collapse: [GitHub](https://github.com/RadoslavBotov/Wave-Function-Collapse)
