@@ -16,27 +16,30 @@ Chooses a random, not-collapsed, cell from the grid with the least amount of ent
 
 ## Functionality
 
-+ Resizable grid to easily change generated image size (only from configs) ✅
-+ Manual mode where user can choose tiles randomly ✅
-+ Add new tilesets easily by providing files(png or jpeg) and describing their side codes in a yaml file ✅
-+ Choose from available tiles sets from GUI ✅
-+ Automatic mode that fills grid cell based on tile with least entropy(number of tile possibilities for that cell) ✅
++ Resizable grid to easily change generated image size (only from configs / support different side sizes) ✅
++ Manual mode where user can choose tiles randomly (mouse left click of cell) ✅
++ Add new tilesets 'easily' by providing files(png or jpeg) and describing their side-codes in a yaml file ✅
++ Switch between available tiles sets from GUI (Tile Sets menu > ...) ✅
++ Automatic mode that fills grid cells (Solver menu > solver) ✅
 + Detection if grid is in a dead-end state (some cell has 0 possibilities left) ✅
-+ Save current state of canvas as an image ✅
++ Save current state of canvas as an image (File menu > save as)✅
 
 ## Technologies
 
 + Python 3.12.7
++ pip 24.3.1
 + tkinter 8.6 (built-in)
 + pathlib 1.0.1 (built-in)
++ pillow 11.0.0
++ pyyaml 6.0.2
 + View requirements.txt for other
 
 ## Startup
-> Activate virtual environment.
+> Activate virtual environment
 >
-> Install requirements.txt.
+> Install requirements.txt
 >
-> Run ```python main.py``` with Wave Function Collapse as working directory.
+> Run ```python main.py``` with Wave Function Collapse as working directory
 
 ## Menus
 

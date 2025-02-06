@@ -97,20 +97,24 @@ class CellManager:
 
     def load_cells_with_current_tile_set(self, bool_variable) -> None:
         '''
-        
+        Clears previous cells state and creates them again,
+        loading the current chosen TileSet (self._current_tile_set).
         '''
+        # get current_tile_set and check if images are present
         tile_set = self.tile_set_manager[self._current_tile_set]
         tile_set.resize_tiles(self.cell_size)
         tile_set_image_size = tile_set.get_tile_image_size()
         if tile_set_image_size is None:
             raise ValueError('TileSet with None image.')
 
+        # clear previous cells state
         for cell_row in self.cells:
             for cell in cell_row:
                 cell.clear(self.canvas)
 
         self.cells.clear()
 
+        # create new cells with new TileSet
         for row in range(self.rows):
             row_of_cells = []
             for column in range(self.columns):
@@ -127,7 +131,10 @@ class CellManager:
                               bool_variable: tk.BooleanVar,
                               new_tile_set='default_tile_set') -> None:
         '''
+        Load cells with a TileSet from an available tile set from the TileSetManager.
         
+        - bool_variable - contains whether show_extra_information was ON/OFF
+        - new_tile_set - name of TileSet to switch to
         '''
         if new_tile_set not in self.tile_set_manager:
             raise ValueError('Invalid tile set name.'

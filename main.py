@@ -1,3 +1,6 @@
+'''
+Entry point of Wave Function Collapse app.
+'''
 import os
 import tkinter as tk
 
@@ -16,12 +19,18 @@ from src.tiles.tile_set_manager import TileSetManager
 from src.tiles.tile_set import TileSet
 
 
-def highlightCell(event, cell_manager: CellManager):
+def highlight_cell(event, cell_manager: CellManager):
+    '''
+    Highlight cell on mouse hover.
+    '''
     row, column = cell_manager.get_cell_indices(event.x, event.y)
     cell_manager.highlight_cell(row, column)
 
 
 def collapse(event, cell_manager: CellManager):
+    '''
+    Collapse cell on mouse click.
+    '''
     row, column = cell_manager.get_cell_indices(event.x, event.y)
     chosen_tile = cell_manager.collapse(row, column)
     if chosen_tile is not None:
@@ -29,24 +38,33 @@ def collapse(event, cell_manager: CellManager):
 
 
 def save_image(cell_manager: CellManager):
+    '''
+    Dialog to save current state of canvas as image.
+    '''
     file_types = [('png', '*.png'), ('jpeg', '*.jpeg')]
-    
+
     file = filedialog.asksaveasfilename(title='Save Current Image As',
                                         filetypes=file_types,
                                         initialdir=os.getcwd(),
                                         defaultextension="*.*")
-    
+
     if file != '':
         image = cell_manager.get_current_image()
         image.save(file)
 
 
 def chose_tile_set(bool_variable, tile_set_name, cell_manager):
+    '''
+    Switch between available TileSet's from TileSet menu.
+    '''
     print(tile_set_name)
     cell_manager.switch_tile_sets_with(bool_variable, tile_set_name)
 
 
 def show_extra_cell_information(bool_variable, cell_manager):
+    '''
+    Show number of available tiles in each cell.
+    '''
     if bool_variable.get() is True:
         cell_manager.enable_cell_extra_information()
     else:
@@ -54,21 +72,30 @@ def show_extra_cell_information(bool_variable, cell_manager):
 
 
 def solver_csp(cell_manager: CellManager, delay):
+    '''
+    Automatically solve/fill canvas based on state of grid cells,
+    from Solver menu.
+    '''
     solver = Solver(cell_manager, delay)
     solver.start()
     solver.check_invalid()
 
 
 def create_tile_set(configs: dict, images: dict[str, Image.Image]) -> TileSet:
+    '''
+    Create a tile set based on TileSet configs and available images.
+    '''
     tiles = []
 
     for image_name in configs:
+        # create a TIle for each image in configs
         image_configs = configs[image_name]
         side_codes = image_configs['directions']
 
         original_tile = Tile(images[image_name], side_codes)
         tiles.append(original_tile)
 
+        # create a number of copies of Tile based on configs
         for rotations_amount, rotation_direction in image_configs['rotations']:
             rotated_tile = Tile(images[image_name], side_codes)
             rotated_tile.rotate_tile(rotations_amount, rotation_direction)
@@ -78,24 +105,28 @@ def create_tile_set(configs: dict, images: dict[str, Image.Image]) -> TileSet:
 
 
 def create_tile_set_manager(path_to_tiles: Path) -> TileSetManager:
+    '''
+    Create all valid TileSets from given directory, and collect them
+    in a TileSetManager.
+    '''
     tile_set_dirs = [ts for ts in os.listdir(path_to_tiles) if ts.endswith('tile_set')]
     tile_sets = {}
 
     for tile_set_name in tile_set_dirs:
-        tile_set_configs = read_config_file(Path(path_to_tiles, tile_set_name, f'{tile_set_name}.yaml'))
-        
-        tile_set_formatted_configs = format_image_configs(tile_set_configs)
+        configs = read_config_file(Path(path_to_tiles, tile_set_name, f'{tile_set_name}.yaml'))
+        tile_set_formatted_configs = format_image_configs(configs)
 
         tile_set_images = read_images(Path(path_to_tiles, tile_set_name))
-
         tile_set = create_tile_set(tile_set_formatted_configs, tile_set_images)
+        tile_sets[tile_set_name] = tile_set
 
-        tile_sets[tile_set_name] = tile_set 
-    
     return TileSetManager(tile_sets)
 
 
 def create_tkinter_widgets(rows, column, size):
+    '''
+    Create Tkinter widgets for UI.
+    '''
     # Create root window
     root = tk.Tk()
     root.geometry(f'{rows*size[0]}x{column*size[1]}')
@@ -110,6 +141,9 @@ def create_tkinter_widgets(rows, column, size):
 
 
 def create_menus(root, cell_manager, tile_set_manager, show_extra_information, delay):
+    '''
+    Create dropdown menus for main window.
+    '''
     # Menus
     menubar = tk.Menu(root)
 
@@ -121,18 +155,22 @@ def create_menus(root, cell_manager, tile_set_manager, show_extra_information, d
     # Menu for switching tile sets
     tile_set_menu = tk.Menu(menubar, tearoff=0)
     for tile_set_name in tile_set_manager:
-        tile_set_menu.add_command(label=tile_set_name,
-                                  command=lambda sei=show_extra_information,
-                                  tile_set_manager=tile_set_name: chose_tile_set(sei, tile_set_manager, cell_manager))
+        tile_set_menu.add_command(
+            label=tile_set_name,
+            command=lambda sei=show_extra_information,
+            tile_set_manager=tile_set_name: chose_tile_set(sei, tile_set_manager, cell_manager)
+        )
     menubar.add_cascade(menu=tile_set_menu, label = "Tile Sets")
-    
+
     # Menu for showing extra cell information on canvas
     cell_menu = tk.Menu(root, tearoff=0)
-    cell_menu.add_checkbutton(label='Show extra information',
-                              onvalue=1,
-                              offvalue=0,
-                              variable=show_extra_information,
-                              command=lambda: show_extra_cell_information(show_extra_information, cell_manager))
+    cell_menu.add_checkbutton(
+        label='Show extra information',
+        onvalue=1,
+        offvalue=0,
+        variable=show_extra_information,
+        command=lambda: show_extra_cell_information(show_extra_information, cell_manager)
+    )
     menubar.add_cascade(menu=cell_menu, label = "Cells")
 
     # Menu for starting solver
@@ -142,22 +180,25 @@ def create_menus(root, cell_manager, tile_set_manager, show_extra_information, d
     menubar.add_cascade(menu=solver_menu, label = "Solver")
 
     root.config(menu=menubar)
-    
+
     return show_extra_information
 
 
 def main():
+    '''
+    Main program flow that reads needed files and creates objects.
+    '''
     # Load and format default configs
     configs = read_config_file(Path('configs.yaml'))
     configs = format_wfc_configs(configs)
-    
+
     # get all default configs
     default_tile_path = configs['default_tile_path']
     default_cell_rows = configs['default_cell_rows']
     default_cell_columns = configs['default_cell_columns']
     default_cell_size = configs['default_cell_size']
     default_solver_delay = configs['default_solver_delay']
-    
+
     # Get path to directory with TileSets
     path_to_tiles = Path(default_tile_path)
 
@@ -168,25 +209,24 @@ def main():
 
     # Create managers
     tile_set_manager = create_tile_set_manager(path_to_tiles)
-    
     cell_manager = CellManager(default_cell_rows,
                                default_cell_columns,
                                default_cell_size,
                                canvas,
                                tile_set_manager)
-    
+
     # Create tkinter variables
     show_extra_information = tk.BooleanVar()
     show_extra_information.set(False)
-    
+
     # Create menus
     create_menus(root, cell_manager, tile_set_manager, show_extra_information, default_solver_delay)
 
     # Bind events
     cell_manager.switch_tile_sets_with(show_extra_information)
     canvas.bind('<Button-1>', lambda event: collapse(event, cell_manager))
-    root.bind('<Motion>', lambda event: highlightCell(event, cell_manager))
-    
+    root.bind('<Motion>', lambda event: highlight_cell(event, cell_manager))
+
     # Start mainloop
     root.mainloop()
 
